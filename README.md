@@ -1,7 +1,7 @@
 # FinalProject
 This is a Final Project
 
-Its a Web POS that runes on J2EE Framework with HTML, JSP, MYSQL.
+Its a Web POS that supports J2EE Framework with HTML, JSP, MYSQL.
 
 This application consist of a SQL Database File.
 
