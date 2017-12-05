@@ -1,0 +1,234 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<title>Card Scanner</title>
+
+<style type="text/css">
+
+#conventionorder th { text-align: center; }
+.convorddiv { clear: both; }
+#convord_info { width: 60%; margin-right: auto; margin-left: auto; height: auto;}
+#convord_payments { width: 355px; margin-right: auto; margin-left: auto; margin-bottom: 2em; height:auto; }
+#scancardprompt { display: none; text-align: center; }
+#scancardprompt span { background-color:yellow; font-weight: bold; margin:3px;}
+
+#conventionorder table { 
+border-style: solid; 
+border-width: 1px;
+border-color: #000; 
+}
+#conventionorder table table {
+border: none;
+}
+#conventionorder td,
+#conventionorder th { padding: 3px; }
+</style>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="https://www.simplify.com/commerce/v1/simplify.js"></script>
+<script type="text/javascript">
+
+/* sdkCardReader parses the credit card data into the form fields */
+
+var cardParsed = false;
+
+$(function() {
+$("#CC_Num").change(function () { checkForReaderInput($(this).val()); } )
+.focus(function() { $('#scancardprompt').fadeIn('slow'); })
+.keypress(function() { $('#scancardprompt').hide(); });
+$('#ConvOrdForm').submit(function () { return checkPaySubmit(); });
+$(':input:visible').each(function(i,e){ $(e).attr('tabindex',i) });
+if (!$("#adminAlert").length && $("#CC_Num").length) { 
+if ($("#CC_Num").val().length==0) { $("#CC_Num").focus(); }
+else { $("#btnsubmitorder").focus(); }
+} else { $('#conventionorder input:visible:first').focus(); }
+
+});
+
+function checkForReaderInput(string) {
+if (string.substring(0,2) == "%B") {
+string = string.replace('%B', '');
+var arr = string.split('^');
+if (arr[0].length == 16) {
+$('#CC_Num').val(arr[0]);
+$('#CC_ExpMn').val(arr[2].substring(2, 4));
+$('#CC_ExpYr').val('20'+arr[2].substring(0, 2));
+var nameArr = arr[1].split('/');
+$('#CC_Name').val(nameArr[1]+' '+nameArr[0]);
+setMOP(arr[0].substring(0,1));
+}
+cardParsed = true;
+$('#sdkinputid_CC_Num span.errortext').hide();
+return false;
+}
+setMOP(string.substring(0,1));	// for manual CC# entry
+}
+
+function checkPaySubmit() {
+if (cardParsed) { 
+cardParsed = false;
+$('#CC_CVC').focus();
+return false;
+}
+return true;
+}
+
+function setMOP(ccnum) {
+// set #CC_MOP based on first number of CC_Num..
+switch (ccnum) {
+case "0": $('#CC_MOP').val('AX'); break;
+case "4": $('#CC_MOP').val('VC'); break;
+case "5": $('#CC_MOP').val('MC'); break;
+}
+}
+</script>
+
+</head>
+
+<body>
+<div id="wrapper">
+<div id="pagebody">
+
+<div id="conventionorder">
+
+<form action="paymentServlet" method="post" id="ConvOrdForm">
+
+<div id="convord_payments" class="convorddiv">
+<h4>Payment Information</h4>
+<div id="scancardprompt"><span>Scan card or type in number</span></div>
+<input type="hidden" name="WebTransID" id="WebTransID" value="-1" />
+<div id="sdkccinfodiv">
+<table>
+<tr>
+<th class="headerrow"><label for="CC_Num">Card Number</label></th>
+<td><div id="sdkinputid_CC_Num"><input type="text" name="CC_Num" id="CC_Num" value="" size="22" autocomplete="off" /></div></td>
+</tr>
+
+<tr>
+<th class="headerrow"><label for="CC_ExpMn">Expiration Date</label></th>
+<td><div><select name="CC_ExpMn" id="CC_ExpMn">
+<option value="01">01</option>
+<option value="02">02</option>
+<option value="03">03</option>
+<option value="04">04</option>
+<option value="05">05</option>
+<option value="06">06</option>
+<option value="07">07</option>
+<option value="08">08</option>
+<option value="09">09</option>
+<option value="10">10</option>
+<option value="11">11</option>
+<option value="12">12
+</option>
+</select> / 
+<select name="CC_ExpYr" id="CC_ExpYr">
+<option value="2012">2012</option>
+<option value="2013">2013</option>
+<option value="2014">2014</option>
+<option value="2015">2015</option>
+<option value="2016">2016</option>
+<option value="2017">2017</option>
+<option value="2018">2018</option>
+<option value="2019">2019</option>
+<option value="2020">2020</option>
+<option value="2021">2021</option>
+<option value="2022">2022</option>
+<option value="2023">2023</option>
+<option value="2024">2024</option>
+<option value="2025">2025</option>
+<option value="2026">2026</option>
+<option value="2027">2027</option>
+</select></div></td>
+</tr>
+
+<tr>
+<th class="headerrow"><label for="CC_MOP">Method of Payment</label></th>
+<td><div id="sdkinputid_CC_MOP"><select name="CC_MOP" id="CC_MOP">
+<option value="MC">Mastercard</option>
+<option value="VC">Visa Card</option>
+<option value="CA">Cash</option>
+</select></div></td>
+</tr>
+
+<tr>
+<th class="headerrow"><label for="CC_Name">Name on card</label></th>
+<td><div id="sdkinputid_CC_Name"><input type="text" name="CC_Name" id="CC_Name" value="" size="30" /></div></td>
+</tr>
+
+<tr>
+<th class="headerrow"><label for="CC_CVC">CVC</label></th>
+<td><div id="sdkinputid_CC_CVC"><input type="text" name="CC_CVC" id="CC_CVC" value="" size="6" style="float:left;" /></div></td>
+</tr>
+
+</table>
+</div><!-- /sdkccinfodiv -->
+
+<p></p><center><input type="submit" name="btnPaymentSubmit" id="btnPaymentSubmit" value="Update Payment Information" /></center>
+
+</div><!-- /convord_payments -->
+
+</form>
+
+</div><!-- conventionorder -->
+</div><!-- /pagebody -->
+</div><!-- /wrapper -->
+</body>
+</html>
+
+
+<script>
+function simplifyResponseHandler(data) {
+    var $paymentForm = $("#ConvOrdForm");
+    // Remove all previous errors
+    $(".error").remove();
+    // Check for errors
+    if (data.error) {
+    	console.log('in error');
+        // Show any validation errors
+        if (data.error.code == "validation") {
+            var fieldErrors = data.error.fieldErrors,
+                fieldErrorsLength = fieldErrors.length,
+                errorList = "";
+            for (var i = 0; i < fieldErrorsLength; i++) {
+                errorList += "<div class='error'>Field: '" + fieldErrors[i].field +
+                             "' is invalid - " + fieldErrors[i].message + "</div>";
+            }
+            // Display the errors
+            $paymentForm.after(errorList);
+        }
+        // Re-enable the submit button
+        $("#process-payment-btn").removeAttr("disabled");
+    } else {
+    	console.log('in else part');
+        // The token contains id, last4, and card type
+        var token = data["id"];
+        // Insert the token into the form so it gets submitted to the server
+        $paymentForm.append("<input type='hidden' name='simplifyToken' value='" + token + "' />");
+        // Submit the form to the server
+        $paymentForm.get(0).submit();
+    }
+}
+
+	$(document).ready(function() {
+		$("#ConvOrdForm").on("submit", function() {
+			// Disable the submit button
+			$("#process-payment-btn").attr("disabled", "disabled");
+			// Generate a card token & handle the response
+			SimplifyCommerce.generateToken({
+				key : "sbpb_YjgxMGNjODItYzUyNC00NWFjLTg3NTItMTRhOWEyOTAxNGQ2",
+				card : {
+					number : $("#sdkinputid_CC_Num").val(),
+					cvc : $("#sdkinputid_CC_CVC").val(),
+					expMonth : $("#CC_ExpMn").val(),
+					expYear : $("#CC_ExpYr").val()
+				}
+			}, simplifyResponseHandler);
+			// Prevent the form from submitting
+			return false;
+		});
+	});
+</script>
