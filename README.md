@@ -5,9 +5,9 @@ Its a Web POS that supports J2EE Framework with HTML, JSP, MYSQL.
 
 This application consist of a SQL Database File.
 
-In Prder to run this APplication first Insert the database into a MySQL or Azure Clear DB.
+To run this Application first Insert the database into a MySQL or Azure Clear DB.
 
-The change the connection information necessary in ConnectionManager.Java file
+Then change the connection information necessary in ConnectionManager.Java file
 
 The next step is to Enjoy.
 
