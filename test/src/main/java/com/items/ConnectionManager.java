@@ -37,12 +37,12 @@ public class ConnectionManager {
 		String password = "76959b7d";
 		*/
 		
-		/*//kdptel2424@gmail.com Updated 11/28/2017 works perfectely
+		//kdptel2424@gmail.com Updated 11/28/2017 works perfectely
 	private static String url = "jdbc:mysql://us-cdbr-azure-central-a.cloudapp.net:3306/OnlinePOS";
 	private static String dbName = "test";
 	private static String driver = "com.mysql.jdbc.Driver";
 	private static String userName = "b84052900eb15a";
-	private static String password = "326f30a3";*/
+	private static String password = "326f30a3";
 		
 	        
 	     /*   Class.forName(driver).newInstance();
@@ -51,11 +51,11 @@ public class ConnectionManager {
 	        	 System.out.println("Error");
 	        return MyConn;
 	    }*/
-	private static String url = "jdbc:mysql://localhost:8889/OnlinePOS";
+	/*private static String url = "jdbc:mysql://localhost:8889/OnlinePOS";
     private static   String dbName = "test";
     private static   String driver = "com.mysql.jdbc.Driver";
     private static   String userName = "root";
-    private static   String password = "root";
+    private static   String password = "root";*/
 	
 	
     public static Connection getConnection() {

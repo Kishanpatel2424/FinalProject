@@ -48,6 +48,12 @@
 	<description></description>
 	<servlet-class>com.items.Report</servlet-class>
 </servlet>
+<servlet>
+	<servlet-name>RecallPurchaseOrder</servlet-name>
+	<display-name>RecallPurchaseOrder</display-name>
+	<description></description>
+	<servlet-class>com.items.RecallPurchaseOrder</servlet-class>
+</servlet>
 
 
 <servlet-mapping>
@@ -90,6 +96,10 @@
 <servlet-mapping>
 	<servlet-name>Report</servlet-name>
 	<url-pattern>/report</url-pattern>
+</servlet-mapping>
+<servlet-mapping>
+	<servlet-name>RecallPurchaseOrder</servlet-name>
+	<url-pattern>/recallPurchaseOrder</url-pattern>
 </servlet-mapping>
 
 

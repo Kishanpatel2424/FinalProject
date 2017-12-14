@@ -47,11 +47,14 @@ ResultSet rs = null;
 PreparedStatement stmt = null;
 %>
 <script>
-function myFunction() {
+function myFunctionAlert() {
     alert("Print the Report before Closing");
 }
+function myFunction() {
+    window.print();
+}
 </script>
-<body onload="myFunction()">
+<body onload="myFunctionAlert()">
 
 <div id="content">
 
@@ -141,7 +144,7 @@ function myFunction() {
 	
       <%          
                  query = "SELECT COUNT(PaymentType) as Transections,PaymentType,SUM(InvoiceTotal) as Total, SUM(Tax) as TaxCollected "+
-                		"FROM Invoice WHERE Invoice.Status='Open' "+
+                		"FROM Invoice WHERE Status='Open' "+
                 		"Group BY PaymentType";
                  
                 rs = stmt.executeQuery(query);
@@ -159,7 +162,7 @@ function myFunction() {
     	<td><%=Tax %></td>
     </tr>
     <%} 
-    	query = "SELECT count(InvoiceNumber) as Customers,SUM(InvoiceTotal) as Total, SUM(Tax) as TaxCollected FROM Invoice WHERE Invoice.Status='open'";
+    	query = "SELECT count(InvoiceNumber) as Customers,SUM(InvoiceTotal) as Total, SUM(Tax) as TaxCollected FROM Invoice WHERE Status='Open'";
     	rs = stmt.executeQuery(query);
     	while(rs.next()){
     		int Customers = rs.getInt("Customers");
@@ -177,9 +180,16 @@ function myFunction() {
     <%} %>
     </div>	
     </table></h3>
+    
+    
+    <div class="row">
+    <div class="col-xs-12 col-md-6">
+	<button onclick="myFunction()" class="btn btn-success btn-block btn-lg">Print Sales Report</button></div>
     <form id="MyForm" name="MyForm" action="report" method="POST" >
-    <input type="submit"name="Close" value="X Report" class="form-control">
-    </form>
+		<div class="col-xs-12 col-md-6"><input type="submit"name="Close" value="Sales Report" class="btn btn-primary btn-block btn-lg"></div>
+	</form>
+	</div>
+    
 </div>
 </body>
 </html>

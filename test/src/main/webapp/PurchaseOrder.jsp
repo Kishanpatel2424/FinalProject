@@ -4,6 +4,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page import="com.mysql.*" %>
 <%@ page import="java.sql.*" %>
+<%@ page import="java.io.PrintWriter.*" %>
 <%@ include file = "home.jsp" %>
 <%@ page import="com.items.*" %>
 <%@ page import="java.util.ArrayList" %> 
@@ -18,8 +19,6 @@
 <title>Purchase Order</title>
 
 </head>
-
-<body>
 <%
 
 String userName = null;
@@ -51,25 +50,10 @@ if(objVendorBean !=null){
 	//System.out.println(itemList.);
 }
 
-
 %>
 
-<script type="text/javascript">
-  function sum() {
-	     var txtFirstNumberValue = document.getElementById('iCost').value;
-	     var txtSecondNumberValue = document.getElementById('qOrder').value;
-	     var result = (parseFloat(txtFirstNumberValue) * parseFloat(txtSecondNumberValue)).toFixed(2);
-	     if (!isNaN(result)) {
-	    	 if(document.getElementById('costSum').value!=null)
-	    		 {
-	    		 document.getElementById('costSum').value = result;
-	    		 }
-	    	 else
-	         	document.getElementById('costSum').value = result;
-	     }
-}
+<body >
 
-</script>
 <center><h1>Purchase Order For</h1><h2> <font color="Green"><%=Vendor_Name %></font></h2></center>
 <div class="container">
 <div class="row">
@@ -162,7 +146,7 @@ if(objVendorBean !=null){
 								            <td style="width:10%"><%=b.getiCost() %></td>
 								            <td style="width:10%"><%=b.getminQty()%></td>
 								            <td style="width:10%"><%=b.getQtyOnHand() %></td>
-								            <td style="width:10%"><input type="number" id="qOrder" name="qOrder" onkeyup="sum()" class="form-control" min="0" ></td>
+								            <td style="width:10%"><input type="number" id="qOrder" name="qOrder" value="0" class="form-control" min="0" ></td>
 											<!-- <td style="width:10%"><input type="number" step="0.01" name="costSum" id="costSum" class="form-control"></td> -->				            
 								        
 								        

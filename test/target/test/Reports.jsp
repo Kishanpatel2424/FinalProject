@@ -46,7 +46,15 @@ Connection conn = ConnectionManager.getConnection();
 ResultSet rs = null;
 PreparedStatement stmt = null;
 %>
-<body>
+<script>
+function myFunctionAlert() {
+    alert("Print the Report before Closing");
+}
+function myFunction() {
+    window.print();
+}
+</script>
+<body onload="myFunctionAlert()">
 
 <div id="content">
 
@@ -75,6 +83,7 @@ PreparedStatement stmt = null;
                 
                 
                 	int num=0;
+                	
                 while(rs.next()){
                 	num++;
                 	int invNum = rs.getInt("InvoiceDetail.InvoiceNumber");
@@ -98,7 +107,7 @@ PreparedStatement stmt = null;
     <%} 
     	query ="SELECT sum((ItemPrice*Quantity)-Tax) as TotalNonTax, sum(Tax) as Tax, sum((ItemPrice*Quantity)+Tax) as Total FROM InvoiceDetail WHERE Status ='Open'";
    		rs = stmt.executeQuery(query);
-   		
+
    		while(rs.next()){
    		double nonTax = rs.getDouble("TotalNonTax");
    		double Tax = rs.getDouble("Tax");
@@ -153,7 +162,7 @@ PreparedStatement stmt = null;
     	<td><%=Tax %></td>
     </tr>
     <%} 
-    	query = "SELECT count(InvoiceNumber) as Customers,SUM(InvoiceTotal) as Total, SUM(Tax) as TaxCollected FROM Invoice WHERE Status='open'";
+    	query = "SELECT count(InvoiceNumber) as Customers,SUM(InvoiceTotal) as Total, SUM(Tax) as TaxCollected FROM Invoice WHERE Status='Open'";
     	rs = stmt.executeQuery(query);
     	while(rs.next()){
     		int Customers = rs.getInt("Customers");
@@ -171,6 +180,16 @@ PreparedStatement stmt = null;
     <%} %>
     </div>	
     </table></h3>
+    
+    
+    <div class="row">
+    <div class="col-xs-12 col-md-6">
+	<button onclick="myFunction()" class="btn btn-success btn-block btn-lg">Print Sales Report</button></div>
+    <form id="MyForm" name="MyForm" action="report" method="POST" >
+		<div class="col-xs-12 col-md-6"><input type="submit"name="Close" value="Sales Report" class="btn btn-primary btn-block btn-lg"></div>
+	</form>
+	</div>
+    
 </div>
 </body>
 </html>

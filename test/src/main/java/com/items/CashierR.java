@@ -214,7 +214,8 @@ public class CashierR extends HttpServlet {
 				
 				for(int i=0;i<ItemBean.getCartItems().size();i++){
 					
-					insertActor = MyConn.prepareStatement("INSERT INTO InvoiceDetail(InvoiceNumber, ItemCode, ItemName,ItemPrice,Quantity,Tax,ItemTotal,Date,Status,Cashier_Name) VALUES (?,?,?,?,?,?,?,?,?,?)");
+					insertActor = MyConn.prepareStatement("INSERT INTO InvoiceDetail(InvoiceNumber, ItemCode, ItemName,ItemPrice,Quantity,"
+							+ "Tax,ItemTotal,Date,Status,Cashier_Name) VALUES (?,?,?,?,?,?,?,?,?,?)");
 					
 					insertActor.setInt(1, InvoiceNumber);
 					insertActor.setString(2, ItemBean.getCartItem(i).getiCode());

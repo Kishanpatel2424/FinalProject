@@ -42,6 +42,12 @@
    <servlet-name>Update</servlet-name>
    <servlet-class>com.items.Update</servlet-class>
 </servlet>
+<servlet>
+	<servlet-name>Report</servlet-name>
+	<display-name>Report</display-name>
+	<description></description>
+	<servlet-class>com.items.Report</servlet-class>
+</servlet>
 
 
 <servlet-mapping>
@@ -80,6 +86,10 @@
 <servlet-mapping>
    <servlet-name>Update</servlet-name>
    <url-pattern>/update</url-pattern>
+</servlet-mapping>
+<servlet-mapping>
+	<servlet-name>Report</servlet-name>
+	<url-pattern>/report</url-pattern>
 </servlet-mapping>
 
 

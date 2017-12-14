@@ -15,11 +15,28 @@
 <head>
 
 <title>Purchase Order</title>
-
-</head>
-
-<body>
-<%
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+  $( function() {
+    //$( "#datepicker" ).datepicker();
+    $( "#datepicker" ).datepicker({
+    	  dateFormat: "yy-mm-dd"
+    	});
+  } );
+  
+ 
+  var Msg ='<%=(String)session.getAttribute("Action")%>';
+      if (Msg != "null") {
+   function alertName(){
+   	alert("Order Created "+Msg);
+   } 
+   }
+ 
+ </script>
+  <%
 
 String userName = null;
 //allow access only if session exists
@@ -32,9 +49,11 @@ if(cookies !=null){
 for(Cookie cookie : cookies){
 	if(cookie.getName().equals("user")) userName = cookie.getValue();
 }
+
+
 }
-%>
-<%
+
+
 String Vendor_Name = (String)session.getAttribute("Vendor_Name");
 Connection conn = ConnectionManager.getConnection();
 //String SearchList =request.getParameter("SearchList");
@@ -43,27 +62,32 @@ PreparedStatement insertActor;
 ItemBean VendorBean =null;
 ArrayList<ItemsDescription> itemList =null;
 
-Object objVendorBean = session.getAttribute("Vendor_List");
-if(objVendorBean !=null){
-	VendorBean = (ItemBean) objVendorBean ;
-	itemList =VendorBean.getVendorItemList();
-	//System.out.println(itemList.);
-}
+Object objVendorBean = session.getAttribute("Update_Vendor_List");
+
 %>
 
+  
+</head>
+
+<body>
 
 <center><h1>Purchase Order For</h1><h2> <font color="Green"><%=Vendor_Name %></font></h2></center>
 <div class="container">
 <div class="row">
 				
 				
-				<form name="MyForm" action="purchaseOrder" method="POST" role="form">
+				<form name="MyForm" action="recallPurchaseOrder" method="POST" role="form">
 				<table class="table" id="item">
 				<tr>
 				<th style="width:20%">
-				<div class="form-group" style="font-size:20px"> Choose Vendor</div>
+				<div class="form-group" style="font-size:20px">Date Ordered:
+					<div>
+						<input type="text" id="datepicker"name="date" size="10"  style="font-size:20px" tabindex="1" required class="form-control input-lg">
+					</div>
+				</div>
 				</th>
-				<th style="width:40%">
+				<th style="width:40%"> 
+				<div class="form-group" style="font-size:20px">Vendor Name:</div>
 				<div class="col-xs-12 col-sm-12 col-md-12">
 				
 				
@@ -77,7 +101,7 @@ if(objVendorBean !=null){
                 %>
                
 				
-						<select name="Vendor_Name" class="form-control input-lg" placeholder="Vendors" tabindex="4">
+						<select name="Vendor_Name" class="form-control input-lg" tabindex="2">
 							<%
 		                while(rs.next()){
 		                	num++;
@@ -93,16 +117,15 @@ if(objVendorBean !=null){
 						</th>
 				<th style="width:40%">
 				<div class="col-xs-12 col-sm-4 col-md-4">
-				<input type="submit" value="Select" name="Select" class="btn btn-primary btn-block btn-lg"></div>
+				<input type="submit" value="Select" name="Recall" class="btn btn-primary btn-block btn-lg"></div>
 				</th>
 				</tr>
-				<tr>
-				</tr>
+				
 				</table>
 				</form>
 
 				
-				<form name="MyForm" action="purchaseOrder" method="POST">
+				<form name="MyForm" action="recallPurchaseOrder" method="POST">
 				<table class="table" id="item">
 				
 				<div class="row">
@@ -114,7 +137,7 @@ if(objVendorBean !=null){
 						<td style="width:10%">Min Qty</td>
 						<td style="width:10%">Qty On Hand</td>
 						<td style="width:10%">Qty Order</td>
-						<td style="width:15%">Order Recieved</td>
+						<td style="width:15%">Qty Recieved</td>
 						<!-- <td style="width:15%">Total</td> -->
 						
 					</tr>
@@ -148,7 +171,7 @@ if(objVendorBean !=null){
 								            <td style="width:10%"><%=b.getminQty()%></td>
 								            <td style="width:10%"><%=b.getQtyOnHand() %></td>
 								            <td style="width:10%"><%=b.getQtyToOrder() %></td>
-								            <td style="width:15%"><input type="number" id="qOrder" name="qOrder" onkeyup="sum()" class="form-control" min="0" ></td>
+								            <td style="width:15%"><input type="number" id="qOrder" name="qRecieved" value="<%=b.getQtyToOrder()%>" class="form-control" min="0" ></td>
 											<!-- <td style="width:10%"><input type="number" step="0.01" name="costSum" id="costSum" class="form-control"></td> -->				            
 								        
 								        
@@ -164,7 +187,7 @@ if(objVendorBean !=null){
 				<div class="row">
 				
 				<div class="col-xs-12 col-md-6"><input type="submit" value="Clear" name="Clear" class="btn btn-danger btn-block btn-LG"/></div>
-				<div class="col-xs-12 col-md-6"><input type="submit"  name="CreateOrder" Value="Create Order" class="btn btn-success btn-block btn-LG"></div>
+				<div class="col-xs-12 col-md-6"><input type="submit"  name="AddOrder" Value="Add Order" class="btn btn-success btn-block btn-LG"></div>
 				</div>
 				</form>
 				

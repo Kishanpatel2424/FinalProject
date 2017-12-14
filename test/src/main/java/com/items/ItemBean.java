@@ -6,11 +6,12 @@ public class ItemBean {
 	private ArrayList<ItemsDescription> itemList = new ArrayList<ItemsDescription>();
 	public ArrayList<ItemsDescription> VendorItemList = new ArrayList<ItemsDescription>();
 	private ArrayList<ItemsDescription> purchaseOrder = new ArrayList<ItemsDescription>();
-	public ItemsDescription vendorItem =null;
+	
 	public double orderTotal, orderTotalTax =0.0;
 	public double change_Due =0;
 	private double itemTotalRemove, itemTotalRemoveTax =0.0;
 	private double dummy=0;
+	
 	public int getTotalItemCount(){
 		return itemList.size();
 	}
@@ -27,10 +28,12 @@ public class ItemBean {
 	public double getChangeDue(){
 		return this.change_Due;
 	}
-	public void createPurchaseOrder(int vendor_Id, String iCode, double iCost, int orderQty){
+	public void createPurchaseOrder(int vendor_Id, String iName, String iCode, 
+			double iCost, int orderQty){
 		ItemsDescription purchaseOrder = new ItemsDescription();
 		try{
 			purchaseOrder.setVendorId(vendor_Id);
+			purchaseOrder.setiName(iName);
 			purchaseOrder.setiCode(iCode);
 			purchaseOrder.setiCost(iCost);
 			purchaseOrder.setQtyToOrder(orderQty);
@@ -112,7 +115,7 @@ public class ItemBean {
 		ItemsDescription cartItem = null;
 		  if(itemList.size()>=iItemIndex) {
 		   cartItem = (ItemsDescription) itemList.get(iItemIndex);
-		   System.out.println(cartItem.iCode+" Code Name is "+cartItem.iName);
+		   //System.out.println(cartItem.iCode+" Code Name is "+cartItem.iName);
 		  }
 		  return cartItem;
 		 }
@@ -181,7 +184,7 @@ return TotalsumTax;
 public void VendorItem(String ItemCode, String ItemName,
 		double ItemCost, int QuantityOnHand, int minQty) {
 		 
-		  
+	ItemsDescription vendorItem =null;
 		  vendorItem = new ItemsDescription();
 		  try {
 		   

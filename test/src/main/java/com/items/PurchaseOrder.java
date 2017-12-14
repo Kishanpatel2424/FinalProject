@@ -1,7 +1,7 @@
 package com.items;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,7 +20,7 @@ import javax.servlet.http.HttpSession;
 /**
  * Servlet implementation class PurchaseOrder
  */
-@WebServlet("/PurchaseOrder")
+//@WebServlet("/PurchaseOrder")
 public class PurchaseOrder extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -63,15 +63,18 @@ public class PurchaseOrder extends HttpServlet {
 		// TODO Auto-generated method stub
 		//doGet(request, response);
 		vendor_Name = (String)request.getParameter("Vendor_Name");
-		System.out.println("Vendor Name is"+vendor_Name+" name");
+		String date = (String)request.getParameter("date");
+		
+		System.out.println("Vendor Name is"+vendor_Name+" name " + date);
 		boolean actionCreateOrder = request.getParameter("CreateOrder") !=null;
 		boolean actionClear = request.getParameter("Clear") !=null;
 		//System.out.println(actionCreateOrder+" action is");
 		if(vendor_Name != null && !vendor_Name.equals("null") && !vendor_Name.equals(" ")){
 			//clearVendorItem(request, response);	
 			try{
-				findVendorItems(request, response, vendor_Name);
-			}
+				
+					findVendorItems(request, response, vendor_Name);
+				}
 			catch(NullPointerException e){
 				
 			}
@@ -100,6 +103,24 @@ public class PurchaseOrder extends HttpServlet {
 		int j=0;
 		//VendorOrderList = new ItemBean();
 		
+		temp = getData(request);
+		if(VendorOrderBean!=null){
+			//System.out.println(VendorOrderBean.hashCode()+" Obj has value");
+			
+		    for(ItemsDescription b:VendorBean.getVendorItemList()){
+		    	b.setQtyToOrder(temp[j]);
+				VendorOrderList.createPurchaseOrder(vendor_Id, b.getiName(),b.getiCode(), b.getiCost(), b.getQtyToOrder());
+				
+				j++;
+			}
+		    
+		}
+		VendorBean.setpurchaseOrder(VendorBean.getpurchaseOrder());
+		
+		savePurchaseOrder(VendorBean, vendor_Id, request,response);
+	}
+	private static int[] getData(HttpServletRequest request){
+		int []temp =null;
 		Enumeration allParameterNames = request.getParameterNames();
 		while(allParameterNames.hasMoreElements())
 		{
@@ -116,24 +137,12 @@ public class PurchaseOrder extends HttpServlet {
 		    
 		 break;   
 		}
-		if(VendorOrderBean!=null){
-			//System.out.println(VendorOrderBean.hashCode()+" Obj has value");
-			
-		    for(ItemsDescription b:VendorBean.getVendorItemList()){
-		    	b.setQtyToOrder(temp[j]);
-				VendorOrderList.createPurchaseOrder(vendor_Id, b.getiCode(), b.getiCost(), b.getQtyToOrder());
-				
-				j++;
-			}
-		    
-		}
-		VendorBean.setpurchaseOrder(VendorBean.getpurchaseOrder());
-		
-		savePurchaseOrder(VendorBean, vendor_Id, response);
+		return temp;
 	}
-	protected void savePurchaseOrder(ItemBean purchaseOrder, int Vendor_Id, HttpServletResponse response) throws IOException, ServletException {
-		PrintWriter out = response.getWriter();
+	protected void savePurchaseOrder(ItemBean purchaseOrder, int Vendor_Id, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		
+		
+		HttpSession session = request.getSession(true);
 		MyConn = ConnectionManager.getConnection();
 		PreparedStatement insertActor=null;
 		Calendar cal = Calendar.getInstance();
@@ -158,20 +167,23 @@ public class PurchaseOrder extends HttpServlet {
 			
 			for(ItemsDescription b:purchaseOrder.getVendorItemList()){
 				
-				insertActor = MyConn.prepareStatement("INSERT INTO Purchase_Order_Detail(Purchase_Order_Index, Vendor_Id, ItemCode,ItemPrice,ItemOrdered,DateCreated) VALUES (?,?,?,?,?,?)");
+				insertActor = MyConn.prepareStatement("INSERT INTO Purchase_Order_Detail(Purchase_Order_Index, Vendor_Id, ItemCode,ItemName, ItemPrice,ItemOrdered,DateCreated) VALUES (?,?,?,?,?,?,?)");
 				insertActor.setInt(1, OrderHeaderNum);
 				insertActor.setInt(2, Vendor_Id);
 				insertActor.setString(3, b.getiCode());
-				insertActor.setDouble(4, b.getiCost());
-				insertActor.setInt(5, b.getQtyToOrder());
-				insertActor.setTimestamp(6, timestamp);
+				insertActor.setString(4, b.getiName());
+				insertActor.setDouble(5, b.getiCost());
+				insertActor.setInt(6, b.getQtyToOrder());
+				insertActor.setTimestamp(7, timestamp);
 				
 				result =insertActor.executeUpdate();
 				
 			}
-				out.println("<script type=\"text/javascript\">");
-				out.println("alert('Order Created');");
-				out.println("</script>");
+			if(result>=1){
+				session.setAttribute("Action", "Successfull");
+				VendorBean.clearPurchaseOrder();
+				response.sendRedirect("/test/PurchaseOrder.jsp");
+			}
 		
 		} catch (SQLException e) {
 			try {
@@ -183,8 +195,8 @@ public class PurchaseOrder extends HttpServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		purchaseOrder.clearCartItem();
-		response.sendRedirect("/test/PurchaseOrder.jsp");
+		/*purchaseOrder.clearCartItem();
+		response.sendRedirect("/test/PurchaseOrder.jsp");*/
 		//request.getRequestDispatcher("/PurchaseOrder.jsp").forward(request, response);
 		
 	}
@@ -197,11 +209,12 @@ public class PurchaseOrder extends HttpServlet {
 			VendorBean.clearVendorItem();
 		
 	}
+
 	protected void findVendorItems(HttpServletRequest request, HttpServletResponse response, String vendor_Name) throws ServletException, IOException{
 		
 		HttpSession session = request.getSession(true);
 		boolean findVendor = true;
-		
+		session.removeAttribute("Action");
 		objVendorBean = session.getAttribute("Vendor_List");
 		VendorBean = (ItemBean)objVendorBean;
 		////FInish the Vendor clearList Code

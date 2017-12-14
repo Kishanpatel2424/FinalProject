@@ -47,7 +47,7 @@ if(objCartBean !=null){
           
            <div id="sdkinputid_CC_Num" >
         		<label>Amount Given: </label>
-        		<input id="Cash" name="Cash" type="number" class="null card-image form-control" maxlength="10" autocomplete="off" min="0" max="3000"value="" autofocus />
+        		<input id="Cash" name="Cash" type="number" class="null card-image form-control" step="0.01"maxlength="10" autocomplete="off" min="0" max="3000"value="" autofocus />
         		
     	  </div>
      	<br>  

@@ -62,7 +62,8 @@ public class Report extends HttpServlet {
 	
 	protected void closeReport(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException{
 		HttpSession session = request.getSession();
-		int seq_num =0;
+		int seq_numBefore =0;
+		int seq_numAfter =0;
 		try {
 			MyConn = ConnectionManager.getConnection();
 			
@@ -70,23 +71,35 @@ public class Report extends HttpServlet {
 			java.sql.Timestamp timestamp = new java.sql.Timestamp(cal.getTimeInMillis());
 			PrintWriter out = response.getWriter();
 			
+			insertActor = MyConn.prepareStatement("SELECT MAX(Closed_Seq_num) from reportHeader");
+			ResultSet rs1 = insertActor.executeQuery();
+			
+			while(rs1.next()){
+				seq_numBefore = rs1.getInt(1);
+				
+			}
+			System.out.println(seq_numBefore+" Closing seq Num Before");
+			
 			insertActor = MyConn.prepareStatement("Insert into reportHeader (Closing_Date) VALUES (?)");
 			insertActor.setTimestamp(1, timestamp);
 			int rs = insertActor.executeUpdate();
 			
 			System.out.println(rs+" Inserted");
+			
 			insertActor = MyConn.prepareStatement("SELECT MAX(Closed_Seq_num) from reportHeader");
-			ResultSet rs1 = insertActor.executeQuery();
+			rs1 = insertActor.executeQuery();
 			
 			while(rs1.next()){
-				seq_num = rs1.getInt(1);
+				seq_numAfter = rs1.getInt(1);
 				
 			}
-			System.out.println(seq_num+" Closing seq Num");
+			System.out.println(seq_numAfter+" Closing seq Num");
 			
-			insertActor = MyConn.prepareStatement("Update Invoice set Status =? where Closed_Seq_num =?");
+			insertActor = MyConn.prepareStatement("Update Invoice set Status =?, Closed_Seq_num =? where Status=? and Closed_Seq_num=?");
 			insertActor.setString(1, "Closed");
-			insertActor.setInt(2, seq_num-1);
+			insertActor.setInt(2, seq_numAfter);
+			insertActor.setString(3, "Open");
+			insertActor.setInt(4, seq_numBefore);
 			
 			int finishUpdate = insertActor.executeUpdate();
 			System.out.println(finishUpdate+" for Invoice Table");
@@ -94,13 +107,14 @@ public class Report extends HttpServlet {
 			insertActor = MyConn.prepareStatement("Update InvoiceDetail set Status =? where Status =?");
 			insertActor.setString(1, "Closed");
 			insertActor.setString(2, "Open");
-			
+			finishUpdate=0;
 			finishUpdate = insertActor.executeUpdate();
+			if(finishUpdate>=1){
 			System.out.println(finishUpdate+" for InvoiceDetail Table");
 				out.println("<script type=\"text/javascript\">");
 				out.println("alert('Report Saved');");
 				out.println("</script>");
-				
+			}
 			
 			
 			

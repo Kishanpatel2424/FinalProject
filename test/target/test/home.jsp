@@ -62,6 +62,7 @@
   <a href="/test/Update.jsp" id="Update" >UpdateItems</a>
   <a href="/test/Reports.jsp" id="Report" >Reports</a>
   <a href="/test/PurchaseOrder.jsp" id="Purchase Order">Purchase Order</a>
+  <a href="/test/RecallPurchaseOrder.jsp" id="Recall POrder">Recall P-Order</a>
   <a><form action="<%=response.encodeURL("LogoutServlet") %>" method="post">
 					<input type="submit"class="btn btn-danger btn btn-primary btn-L" Value="LogOut" style="width:100%;">
 				</form></a>
